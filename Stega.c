@@ -9,7 +9,7 @@ typedef struct{
     unsigned int bfSize;
     unsigned short bfReserved1;
     unsigned short bfReserved2;
-    unsigned int bfOffBits
+    unsigned int bfOffBits;
 }BMPFILEHEADER;
 
 typedef struct{
@@ -49,7 +49,21 @@ int main(){
         return 1;
     }
 
-    unsigned char *image = (unsigned char*)malloc(header.bfSize);
+    BMPIMAGEHEADER info;
+    fread(&info, sizeof(BMPIMAGEHEADER), 1, file);
+
+    if (info.biBitCount != 24)
+        {
+            printf("Error: Only 24-bit BMP images are supported\n");
+            fclose(file);
+            return 1;
+}
+
+
+    //unsigned char *image = (unsigned char*)malloc(header.bfSize);
+    int imageSize = info.biWidth * abs(info.biHeight) * 3;
+    unsigned char *image = malloc(imageSize);
+
     if(!image)
     {
         printf("Error: Memory Allocation failed \n");
@@ -58,7 +72,7 @@ int main(){
     }
 
     fseek(file,header.bfOffBits,SEEK_SET);
-    fread(image,1,header.bfSize,file);
+    fread(image,1,imageSize,file);
     fclose(file);
 
     return 0;
