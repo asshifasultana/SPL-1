@@ -75,5 +75,35 @@ int main(){
     fread(image,1,imageSize,file);
     fclose(file);
 
+    //text file reading
+    FILE *textfile = fopen("secret.txt","rb");
+    if(!textfile){
+        printf("Error: Opening the text file.\n");
+        free(image);
+        return 1;
+    }
+
+    fseek(textfile, 0, SEEK_END);
+    long textSize = ftell(textfile);
+    rewind(textfile);
+
+    if(imageSize<textSize*8){
+        printf("Error: Too long message to embedd \n");
+        free(image);
+        return 1;
+    }
+
+    unsigned char *text= (unsigned char*)malloc(textSize);
+    if(!text){
+        printf("Error: Memory allocation failed.\n");
+        free(image);
+        return 1;
+    }
+
+    fread(text,1,textSize,textfile);
+    fclose(textfile);
+
+   // printf("%s",text);
+
     return 0;
 }
