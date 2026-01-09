@@ -28,9 +28,36 @@ int main(){
         printf("Failed to read BMP image.\n");
         return 1;
     }
-
-
+    
     free(image);
+
+    char textFile[250];
+    printf("Enter the secret text message file name:");
+    scanf("%s",textFile);
+
+    FILE *textfile = fopen(textFile,"rb");
+    if(!textfile){
+        printf("Error: Failed to read text file\n");
+        return 1;
+    }
+
+    fseek(textfile, 0, SEEK_END);
+    long textSize = ftell(textfile);
+    rewind(textfile);
+
+    unsigned char *text = (unsigned char *)malloc(textSize);
+    if(!text){
+        printf("Error: Memory Allocation failed\n");
+        fclose(textfile);
+        free(image);
+        return 1;
+    }
+
+    fread(text,1,textSize,textfile);
+    fclose(textfile);
+    text[textSize]='\0';
+    //printf("Message is %s",text);
+
     }
     return 0;
 }
