@@ -27,18 +27,10 @@ typedef struct{
     unsigned int biClrImportant;
 }BMPIMAGEHEADER;
 
-#pragma pack(pop);
+#pragma pack(pop)
 
-int readBMP(const char *filename,
-            unsigned char **image,
-            int *imageSize,
-            BMPFILEHEADER *fileHeader,
-            BMPIMAGEHEADER *infoHeader);
+int readBMP(const char *filename,unsigned char **image,int *imageSize,BMPFILEHEADER *fileHeader,BMPIMAGEHEADER *infoHeader);
 
-int writeBMP(const char *filename,
-             unsigned char *image,
-             int imageSize,
-             BMPFILEHEADER *fileHeader,
-             BMPIMAGEHEADER *infoHeader);
+//int writeBMP(const char *filename,unsigned char *image,int imageSize, BMPFILEHEADER *fileHeader, BMPIMAGEHEADER *infoHeader);
 
 #endif
