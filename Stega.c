@@ -45,7 +45,17 @@ int main(){
     long textSize = ftell(textfile);
     rewind(textfile);
 
-    unsigned char *text = (unsigned char *)malloc(textSize);
+    int requiredBits = (textSize * 8) + 32;
+
+    if (requiredBits > imageSize) {
+        printf("Error: Image is too small to hold this message.\n");
+    
+        free(textfile);
+        free(image);
+        return 1;
+}
+
+    unsigned char *text = (unsigned char *)malloc(textSize+1);
     if(!text){
         printf("Error: Memory Allocation failed\n");
         fclose(textfile);
