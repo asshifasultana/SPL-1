@@ -31,6 +31,6 @@ typedef struct{
 
 int readBMP(const char *filename,unsigned char **image,int *imageSize,BMPFILEHEADER *fileHeader,BMPIMAGEHEADER *infoHeader);
 
-//int writeBMP(const char *filename,unsigned char *image,int imageSize, BMPFILEHEADER *fileHeader, BMPIMAGEHEADER *infoHeader);
+int writeBMP(const char *filename,unsigned char *image,int imageSize, BMPFILEHEADER *fileHeader, BMPIMAGEHEADER *infoHeader);
 
 #endif

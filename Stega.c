@@ -28,8 +28,6 @@ int main(){
         printf("Failed to read BMP image.\n");
         return 1;
     }
-    
-    free(image);
 
     char textFile[250];
     printf("Enter the secret text message file name:");
@@ -50,7 +48,7 @@ int main(){
     if (requiredBits > imageSize) {
         printf("Error: Image is too small to hold this message.\n");
     
-        free(textfile);
+        fclose(textfile);
         free(image);
         return 1;
 }
@@ -67,6 +65,8 @@ int main(){
     fclose(textfile);
     text[textSize]='\0';
     //printf("Message is %s",text);
+
+    free(image);
 
     }
     return 0;

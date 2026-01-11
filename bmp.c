@@ -58,3 +58,36 @@ int readBMP(const char *filename, unsigned char **image,int *imageSize, BMPFILEH
     fclose(file);
     return 0;   
 }
+
+int writeBMP(const char *filename,unsigned char *image,int imageSize, BMPFILEHEADER *fileHeader, BMPIMAGEHEADER *infoHeader){
+
+    FILE *file = fopen(filename,"wb");
+    if(!file){
+        printf("Error: Couldn't create the Stega Image \n");
+        fclose(file);
+        return -1;
+    }
+
+    if(fwrite(fileHeader,sizeof(BMPFILEHEADER),1,file)!=1){
+        printf("Error: Failed to write BMP File Header \n");
+        fclose(file);
+        return -1;
+    }
+
+    if(fwrite(infoHeader,sizeof(infoHeader),1,file)!=1){
+        printf("Error: Failed to write BMP Info Header \n");
+        fclose(file);
+        return -1;
+    }
+
+    fseek(file,fileHeader->bfOffBits,SEEK_SET);
+
+    if(fwrite(image,1,imageSize,file)!=imageSize){
+        printf("Error: Failed to write the image \n");
+        fclose(file);
+        return -1;
+    }
+
+    fclose(file);
+    return 0;
+}
