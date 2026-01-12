@@ -74,7 +74,7 @@ int writeBMP(const char *filename,unsigned char *image,int imageSize, BMPFILEHEA
         return -1;
     }
 
-    if(fwrite(infoHeader,sizeof(infoHeader),1,file)!=1){
+    if(fwrite(infoHeader,sizeof(BMPIMAGEHEADER),1,file)!=1){
         printf("Error: Failed to write BMP Info Header \n");
         fclose(file);
         return -1;
