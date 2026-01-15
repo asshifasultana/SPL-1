@@ -11,8 +11,8 @@ int main(){
     int choice;
 
     printf("=========Image Steganography========= \n");
-    printf("1.Encode text into image\n");
-    printf("2.Decode text from image\n");
+    printf("1.Embed text into image\n");
+    printf("2.Extract text from image\n");
     printf("Enter your choice:");
     fflush(stdout);
     scanf("%d",&choice);
@@ -167,7 +167,7 @@ int main(){
             free(bitStream);
             return 1;
         }
-
+    
         printf("==========DECODED MESSAGE==============\n");
         printf("%s",decoded);
 

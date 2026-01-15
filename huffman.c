@@ -197,7 +197,7 @@ int Decompression(int *bitStream, int bitCount, int table[256],unsigned char **o
         return 0;
     }
 
-    *output= (unsigned char*)malloc(size);
+    *output= (unsigned char*)malloc(size+1);
     if(!(*output)){
         printf("Error: Memory Allocation failed \n");
         freeTree(root);
@@ -245,6 +245,7 @@ int Decompression(int *bitStream, int bitCount, int table[256],unsigned char **o
 
 
     *outputSize=index;
+    (*output)[size]='\0';
     freeTree(root);
     return 0;
 }
