@@ -207,7 +207,7 @@ int Decompression(int *bitStream, int bitCount, int table[256],unsigned char **o
     int index=0;
     Node* curr=root;
 
-    for(int i=0;i<bitCount;i++){
+    for(int i=0;i<bitCount && index<size;i++){
         if(bitStream[i]==0){
             if(!curr->left){
                 printf("Error: Invalid bitstream \n");
@@ -231,6 +231,9 @@ int Decompression(int *bitStream, int bitCount, int table[256],unsigned char **o
         if(!curr->left && !curr->right){
             (*output)[index++]=curr->ch;
             curr=root;
+            if(index==size){
+                break;
+            }
         }
 
     }

@@ -5,16 +5,66 @@
 #include"lsb.h"
 #include"huffman.h"
 #include"chaoticmap.h"
+#include"hamming.h"
+#include <string.h>
+#include <conio.h>
+
+int login() {
+    char password[20];
+    char correctPassword[] = "dite parbo na";
+    int i = 0;
+    char ch;
+
+    printf("Enter Password: ");
+
+    while ((ch = getch()) != 13) { 
+        password[i++] = ch;
+        printf("*");
+    }
+    password[i] = '\0';
+
+    if (strcmp(password, correctPassword) == 0) {
+        printf("\nAccess Granted!\n");
+        return 1;
+    } else {
+        printf("\nAccess Denied!\n");
+        return 0;
+    }
+}
+
 
 int main(){
 
     int choice;
 
-    printf("=========Image Steganography========= \n");
+    //printf("=========Image Steganography========= \n");
+   #include <stdio.h>
+
+
+    printf("========================================================================================\n");
+    printf("||                                                                                    ||\n");
+    printf("||   ####  #####  #####  ####   ###   #####  #   #   ####  ###   ###     #      #     ||\n");
+    printf("||  #        #    #     #      #   #  #      #   #  #       #   #   #    #  #   #     ||\n");
+    printf("||   ###     #    ###   #  ##  #   #  ###    #   #   ###    #   #   #    #    # #     ||\n");
+    printf("||      #    #    #     #   #  #   #  #      #   #      #   #   #   #    #     ##     ||\n");
+    printf("||  ####     #    #####  ####   ###   #       ###   ####   ###   ###     #      #     ||\n");
+    printf("||                                                                                    ||\n");
+    printf("|| ---------------------------------------------------------------------------------- ||\n");
+    printf("||                         >>   STEGOFUSION v1.0   <<                                 ||\n");
+    printf("||                      Hybrid Image Steganography System                             ||\n");
+    printf("|| ---------------------------------------------------------------------------------- ||\n");
+    printf("||                                                                                    ||\n");
+    printf("========================================================================================\n");
+
+
+    //password to login
+     while(!login()){
+        printf("Try again...\n\n");
+    }
     printf("1.Embed text into image\n");
     printf("2.Extract text from image\n");
     printf("Enter your choice:");
-    fflush(stdout);
+    
     scanf("%d",&choice);
 
     if(choice==1){
@@ -81,15 +131,31 @@ int main(){
         return 1;
     }
 
+    int *hammingStream;
+    int hammingBitCount= hammingEncode(bitStream,bitCount,&hammingStream);
+    free(bitStream);
+
+    if(hammingBitCount>imageSize){
+        printf("Error: Image is too small!");
+        free(image);
+        free(hammingStream);
+        return -1;
+    }
+
+    if(hammingBitCount<0){
+        printf("Error: Hamming Encoding failed!\n");
+        return -1;
+    }
+
     int *chaosSeq=(int *)malloc(imageSize*sizeof(int));
     double seed= 0.5;
     double r= 3.9;
     chaoticmap(chaosSeq,imageSize,seed,r);
 
-    if(embedLSB(image,imageSize,chaosSeq,bitStream,bitCount,table)!=0){
+    if(embedLSB(image,imageSize,chaosSeq,hammingStream,hammingBitCount,table)!=0){
         printf("Error: Embedding failed \n");
         free(image);
-        free(bitStream);
+       // free(bitStream);
         free(chaosSeq);
         return 1;
     }
@@ -106,9 +172,11 @@ int main(){
     }
 
     free(image);
-    free(bitStream);
+    //free(bitStream);
     free(chaosSeq);
     }
+
+    //extracting
 
     else if(choice==2){
         char stegoFile[250];
@@ -138,23 +206,36 @@ int main(){
 
         chaoticmap(chaosSeq,imageSize,seed,r);
 
-        int bitCount;
+        int hammingBitCount;
         int table[256];
-        int *bitStream=(int*)malloc(imageSize*sizeof(int));
+        int *hammingBitStream=(int*)malloc(imageSize*sizeof(int));
 
-        if(!bitStream){
+        if(!hammingBitStream){
             printf("Error: Memory Allocation failed \n");
             free(image);
             free(chaosSeq);
             return 1;
         }
 
-        if(extractLSB(image,imageSize,chaosSeq,bitStream,&bitCount,table)!=0){
+        if(extractLSB(image,imageSize,chaosSeq,hammingBitStream,&hammingBitCount,table)!=0){
             printf("Error: Extraction Failed \n");
             free(image);
             free(chaosSeq);
-            free(bitStream);
+            free(hammingBitStream);
             return 1;
+        }
+
+        int *bitStream;
+        int bitCount;
+
+        bitCount = hammingDecode(hammingBitStream,hammingBitCount,&bitStream);
+        free(hammingBitStream);
+
+        if(bitCount<0){
+            printf("Error: Hamming Decode failed!\n");
+            free(image);
+            free(chaosSeq);
+            return -1;
         }
 
         unsigned char* decoded;
