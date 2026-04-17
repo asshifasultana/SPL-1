@@ -6,6 +6,7 @@
 #include"huffman.h"
 #include"chaoticmap.h"
 #include"hamming.h"
+#include"network.h"
 #include <string.h>
 #include <conio.h>
 
@@ -168,7 +169,27 @@ int main(){
         printf("Error: Failed to write stego image\n");
     }
     else{
-        printf("Steganography successful! Saved as %s",outputFile);
+           int choice;
+
+            printf("\n================================================================\n");
+            printf("                   STEGO IMAGE READY                           \n");
+            printf("================================================================\n");
+            printf(" File saved locally as: %s\n", outputFile);
+            printf("================================================================\n");
+
+            printf("Do you want to send this image?\n");
+            printf(" 1. Yes\n");
+            printf(" 2. No (Exit)\n");
+            printf("Enter choice: ");
+
+            scanf("%d", &choice);
+
+            if(choice == 1){
+                sendToUser(outputFile);
+            }
+            else{
+                printf("\n[+] Exiting...\n");
+            } 
     }
 
     free(image);
