@@ -18,17 +18,38 @@ int login() {
 
     printf("Enter Password: ");
 
-    while ((ch = getch()) != 13) { 
-        password[i++] = ch;
-        printf("*");
+   while ((ch = getch()) != 13) {   // 13 = Enter
+
+    if (ch == 8 || ch == 127) {  // Backspace
+        if (i > 0) {
+            i--;
+            password[i] = '\0';
+
+            printf("\b \b"); // removes last *
+        }
+    }
+        else {
+            password[i++] = ch;
+            printf("*");
+        }
     }
     password[i] = '\0';
 
     if (strcmp(password, correctPassword) == 0) {
-        printf("\nAccess Granted!\n");
+        printf("\n==================================================\n");
+        printf("              AUTHENTICATION SUCCESS             \n");
+        printf("==================================================\n");
+        printf("  Status : Access Granted                        \n");
+        printf("  Welcome : System Unlocked                      \n");
+        printf("==================================================\n\n");
         return 1;
     } else {
-        printf("\nAccess Denied!\n");
+        printf("\n==================================================\n");
+        printf("              AUTHENTICATION FAILED             \n");
+        printf("==================================================\n");
+        printf("  Status : Access Denied                         \n");
+        printf("  Reason : Invalid credentials                   \n");
+        printf("==================================================\n\n");
         return 0;
     }
 }
@@ -62,10 +83,21 @@ int main(){
      while(!login()){
         printf("Try again...\n\n");
     }
-    printf("1.Embed text into image\n");
-    printf("2.Extract text from image\n");
-    printf("Enter your choice:");
+    // printf("1.Embed text into image\n");
+    // printf("2.Extract text from image\n");
+    // printf("Enter your choice:");
     
+
+    printf("\n");
+    printf("============================================================\n");
+    printf("                 MAIN MENU                      \n");
+    printf("============================================================\n");
+    printf("   1. [ EMBED ]   Hide secret text inside image\n");
+    printf("   2. [ EXTRACT ] Retrieve hidden message\n");
+    printf("   3. [ EXIT ]     Close application\n\n");
+
+    printf("------------------------------------------------------------\n");
+    printf(">>> Enter your choice: ");
     scanf("%d",&choice);
 
     if(choice==1){
@@ -279,6 +311,13 @@ int main(){
         free(decoded);
     }
 
+    else if(choice==3){
+        printf("\n==================================================\n");
+        printf("                   EXIT                          \n");
+        printf("==================================================\n");
+        printf("  Thank you for using STEGOFUSION               \n");
+        printf("==================================================\n\n");
+    }
     else{
         printf("Invalid choice \n");
     }
