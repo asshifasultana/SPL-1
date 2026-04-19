@@ -2,8 +2,10 @@
 #include<stdlib.h>
 #include"lsb.h"
 
-int embedLSB(unsigned char* image, int imageSize, int *chaosSeq, int *bitStream, int bitCount, int table[256]){
+
+int embedLSB(unsigned char* image, int imageSize, int *chaosSeq, int *bitStream, int bitCount, int table[256], PixelChange *change, int *changeCount){
     
+    *changeCount=0;
     if(imageSize<32+256*32+bitCount){
         printf("Error: Image too small to embedd data \n");
         return 1;
@@ -15,13 +17,37 @@ int embedLSB(unsigned char* image, int imageSize, int *chaosSeq, int *bitStream,
     for(int i=31;i>=0;i--){
         bit = (bitCount >> i)&1;
 
-        if(bit == 1){
-            image[chaosSeq[chaosIndex]]|=1;
+        // if(bit == 1){
+        //     image[chaosSeq[chaosIndex]]|=1;
+        // }
+        // else{
+        //     image[chaosSeq[chaosIndex]]&=0xFE;
+        // }
+        int idx = chaosSeq[chaosIndex];
+        unsigned char before = image[idx];
+
+        unsigned char after;
+        if(bit==1)
+        {
+            after= before | 1;
         }
-        else{
-            image[chaosSeq[chaosIndex]]&=0xFE;
+        else
+        {
+            after = before & 0xFE;
         }
 
+        image[idx]= after;
+
+        if(before !=after)
+        {
+            change[*changeCount].index= idx;
+            change[*changeCount].before= before;
+            change[*changeCount].after= after;
+            change[*changeCount].bit= bit;
+            (*changeCount)++;
+        }
+
+        
         chaosIndex++;
     }
 
@@ -31,11 +57,35 @@ int embedLSB(unsigned char* image, int imageSize, int *chaosSeq, int *bitStream,
         for(int j=31;j>=0;j--){
             bit=(val >> j)&1;
 
-            if(bit == 1){
-            image[chaosSeq[chaosIndex]]|=1;
+        //     if(bit == 1){
+        //     image[chaosSeq[chaosIndex]]|=1;
+        // }
+        // else{
+        //     image[chaosSeq[chaosIndex]]&=0xFE;
+        // }
+
+        int idx = chaosSeq[chaosIndex];
+        unsigned char before = image[idx];
+
+        unsigned char after;
+        if(bit==1)
+        {
+            after= before | 1;
         }
-        else{
-            image[chaosSeq[chaosIndex]]&=0xFE;
+        else
+        {
+            after = before & 0xFE;
+        }
+
+        image[idx]= after;
+
+        if(before !=after)
+        {
+            change[*changeCount].index= idx;
+            change[*changeCount].before= before;
+            change[*changeCount].after= after;
+            change[*changeCount].bit= bit;
+            (*changeCount)++;
         }
 
         chaosIndex++;
@@ -45,12 +95,36 @@ int embedLSB(unsigned char* image, int imageSize, int *chaosSeq, int *bitStream,
     for(int i=0;i<bitCount;i++){
         bit = bitStream[i];
 
-        if(bit ==1){
-            image[chaosSeq[chaosIndex]]|=1;
+        // if(bit ==1){
+        //     image[chaosSeq[chaosIndex]]|=1;
+        // }
+
+        // else{
+        //     image[chaosSeq[chaosIndex]] &=0xFE;
+        // }
+
+        int idx = chaosSeq[chaosIndex];
+        unsigned char before = image[idx];
+
+        unsigned char after;
+        if(bit==1)
+        {
+            after= before | 1;
+        }
+        else
+        {
+            after = before & 0xFE;
         }
 
-        else{
-            image[chaosSeq[chaosIndex]] &=0xFE;
+        image[idx]= after;
+
+        if(before !=after)
+        {
+            change[*changeCount].index= idx;
+            change[*changeCount].before= before;
+            change[*changeCount].after= after;
+            change[*changeCount].bit= bit;
+            (*changeCount)++;
         }
 
         chaosIndex++;
