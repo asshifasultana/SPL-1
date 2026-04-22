@@ -164,9 +164,9 @@ int main(){
 
 
     //password to login
-     while(!login()){
-        printf("Try again...\n\n");
-    }
+    //  while(!login()){
+    //     printf("Try again...\n\n");
+    // }
     // printf("1.Embed text into image\n");
     // printf("2.Extract text from image\n");
     // printf("Enter your choice:");
@@ -443,7 +443,7 @@ int main(){
 
     
         printf("==========DECODED MESSAGE==============\n");
-        printf("%s",decoded);
+        printf("%s \n",decoded);
 
         free(image);
         free(chaosSeq);

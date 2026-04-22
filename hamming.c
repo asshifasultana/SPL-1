@@ -34,7 +34,7 @@ int hammingEncode(int *bitstream, int bitCount, int **encodedStream){
         int encoded[7];
         includeParityBits(data,encoded);
         
-        // ADD THIS - Copy encoded bits to output stream
+        // Copies encoded bits to output stream
         for(int j=0;j<7;j++){
             (*encodedStream)[i*7+j] = encoded[j];
         }

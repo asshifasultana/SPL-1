@@ -5,19 +5,23 @@
 
 void sendImage(const char *filename, const char *ip,
                     int port, const char *username) {
+
     WSADATA wsa;
     SOCKET sock;
     struct sockaddr_in server;
 
-    WSAStartup(MAKEWORD(2,2), &wsa);
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+    WSAStartup(MAKEWORD(2,2), &wsa);        //initializes windows socket api
+    sock = socket(AF_INET, SOCK_STREAM, 0);  //creates tcp socket,TCP without pipeline, ACK, error checking
 
+    //sets receivers ip and port
     server.sin_family      = AF_INET;
     server.sin_port        = htons(port);
-    server.sin_addr.s_addr = inet_addr(ip);
+    server.sin_addr.s_addr = inet_addr(ip);   //converts ip to binary format
 
     printf("[*] Connecting to %s at %s:%d...\n", username, ip, port);
 
+
+    //try to connect with the receiver, if receiver not alive, connection fails
     if (connect(sock, (struct sockaddr*)&server, sizeof(server)) < 0) {
         printf("Connection failed!\n");
         closesocket(sock);
@@ -27,12 +31,14 @@ void sendImage(const char *filename, const char *ip,
 
     printf("Connected!\n");
 
-    char senderName[50] = "Sender";
+    //after connecting, telling about the sender
+    char senderName[50] = "Asshifa";
     send(sock, senderName, sizeof(senderName), 0);
 
     FILE *f = fopen(filename, "rb");
     if (!f) return;
 
+    //open the file, reads size, send to receiver so receiver knows what to expect
     fseek(f, 0, SEEK_END);
     long fileSize = ftell(f);
     rewind(f);
@@ -43,6 +49,9 @@ void sendImage(const char *filename, const char *ip,
     int bytesRead;
     long totalSent = 0;
 
+    //reads 4096 bytes
+    //sends a chunk of data
+    //repeat
     while ((bytesRead = fread(buffer, 1, sizeof(buffer), f)) > 0) {
         send(sock, buffer, bytesRead, 0);
         totalSent += bytesRead;
@@ -50,6 +59,8 @@ void sendImage(const char *filename, const char *ip,
 
     printf("Sent %ld bytes\n", totalSent);
 
+    //closes file and connection
+    //shut down the whole networking system
     fclose(f);
     closesocket(sock);
     WSACleanup();
